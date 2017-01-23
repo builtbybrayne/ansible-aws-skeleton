@@ -1,0 +1,32 @@
+- name: Spin up the aws instance
+  ec2:
+    key_name: "{{aws_pem_key}}"
+    group: "{{group}}"
+    instance_type: "{{size}}"
+    image: "{{image}}"
+    region: eu-west-1
+    zone: eu-west-1c
+    vpc_subnet_id: "{{vpc_subnet|default(None)}}"
+    wait: true
+    exact_count: "{{count}}"
+    count_tag:
+      Name: "{{name}}"
+    instance_tags:
+      Name: "{{name}}"
+  register: ec2_instances
+
+- name: Determine IPs
+  set_fact:
+    ec2_ips: "{{ec2_ips|combine({item.id: item.public_ip}) }}"
+  with_items: "{{ec2_instances.tagged_instances}}"
+
+- name: Wait for SSH
+  wait_for: port=22 host="{{ ec2_ips[item.id] }}" delay=10
+  with_items: "{{ec2_instances.tagged_instances}}"
+
+- name: Add all instance public IPs to host group
+  add_host: hostname="{{ ec2_ips[item.id] }}" groups="{{host_groups}}" staticIp="{{ ec2_ips[item.id] }}"
+  with_items: "{{ec2_instances.tagged_instances}}"
+
+- name: Define ec2 instances
+  set_fact: ec2_instances="{{ec2_instances.tagged_instances}}"

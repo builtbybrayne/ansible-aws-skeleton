@@ -1,0 +1,34 @@
+- hosts: localhost
+  connection: local
+  tasks:
+    - include: tasks/ec2/load_ec2_instances.yml
+      vars:
+        - count: 1
+        - group: default
+        - name: DAWS1
+        - size: t2.small
+        - image: "{{ami_id_ubuntu_1604}}"
+        - vpc_subnet: "{{ec2_vpc_subnet_dev}}"
+        - host_groups: "ec2,<TODO: Define main host group if required>"
+    - include: tasks/ec2/instance_options.yml
+      vars:
+        - device: /dev/xvdf
+        - volume_name: app
+        - add_to_groups: "ec2"
+        - volume_size: 10
+        - new_volume: true
+    - include: tasks/ec2/instance_options.yml
+      vars:
+        - device: /dev/xvdg
+        - volume_name: logs
+        - add_to_groups: "ec2"
+        - volume_size: 10
+        - new_volume: true
+
+
+- hosts: ec2
+  tasks:
+    - include: tasks/ec2/mount_volume.yml device=/dev/xvdf dir=/<TODO: Define root directory>
+    - include: tasks/ec2/mount_volume.yml device=/dev/xvdg dir=/var/log
+    - debug: var=hostvars[inventory_hostname]
+

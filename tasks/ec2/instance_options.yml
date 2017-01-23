@@ -1,0 +1,10 @@
+- include: ./add_new_volume.yml
+  when: volume_name is defined and new_volume is defined
+
+- include: ./add_existing_volume.yml
+  when: volume_name is defined and new_volume is not defined
+
+- name: Add all instance public IPs to host group
+  add_host: hostname={{ ec2_ips[item.id] }} groups={{add_to_groups}}
+  with_items: "{{ec2_instances}}"
+  when: add_to_groups is defined

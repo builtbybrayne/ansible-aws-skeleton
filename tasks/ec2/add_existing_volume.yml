@@ -1,0 +1,27 @@
+- name: List EBS Volumes
+  ec2_vol:
+    instance: "{{item.id}}"
+    state: list
+  with_items: "{{ec2_instances}}"
+  register: volumes
+
+- name: Attach EBS Volume if it's missing 
+  ec2_vol:
+    instance: "{{ item.0.id }}"
+    device_name: "{{device}}"
+    name: "{{volume_name}}"
+  with_nested:
+    - "{{ec2_instances}}"
+    - "{{volumes.results}}"
+  when: item.0.id == item.1.item.id and item.1.volumes|selectattr('attachment_set.device', 'equalto', device)|list|length == 0
+
+- name: Relist EBS Volumes 
+  ec2_vol:
+    instance: "{{ item.id }}"
+    state: list
+  with_items: "{{ec2_instances}}"
+  register: volumes
+
+- name: Tag EBS Volumes, if necessary 
+  shell: ec2addtag {{(item.volumes|selectattr('attachment_set.device', 'equalto', device)|first).id}} --tag Name="{{volume_name}}"
+  with_items: "{{volumes.results}}"

@@ -1,0 +1,11 @@
+- name: Create EBS Filesystems
+  filesystem: fstype=ext4 dev={{device}}
+  become: yes
+
+- name: Ensures mount dir exists
+  file: path={{dir}} state=directory owner=smc
+  become: yes
+
+- name: Mount the EBS volume
+  mount: name={{dir}} src={{device}} fstype=ext4 state=present
+  become: yes
