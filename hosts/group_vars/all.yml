@@ -1,6 +1,8 @@
 ubuntu: true
 
 aws_pem_key: <TODO: DEFINE AWS PEM KEY>
+aws_access: <TODO: Define AWS Access>
+aws_secret: <TODO: Define AWS Secret>
 ami_id_ubuntu_1604: ami-d8f4deab
 
 ec2_vpc_subnet_dev: <TODO: DEFINE SUBNET>

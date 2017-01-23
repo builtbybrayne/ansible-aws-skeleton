@@ -1,5 +1,7 @@
 - name: Spin up the aws instance
   ec2:
+    aws_access_key: "{{aws_access}}"
+    aws_secret_key: "{{aws_secret}}"
     key_name: "{{aws_pem_key}}"
     group: "{{group}}"
     instance_type: "{{size}}"
