@@ -1,10 +1,27 @@
 - hosts: localhost
   connection: local
   tasks:
+    - include: tasks/ec2/load_groups.yml
+      vars:
+        - group_name: core
+        - group_description: "Core group for all servers"
+        - rules:
+          - proto: tcp
+            from_port: 80
+            to_port: 80
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 443
+            to_port: 443
+            cidr_ip: 0.0.0.0/0
     - include: tasks/ec2/load_ec2_instances.yml
       vars:
         - count: 1
-        - group: default
+        - group: "core"
         - name: DAWS1
         - size: t2.small
         - image: "{{ami_id_ubuntu_1604}}"
