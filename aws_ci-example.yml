@@ -1,0 +1,53 @@
+- hosts: localhost
+  connection: local
+
+  tasks:
+    - include: tasks/ec2/load_groups.yml
+      vars:
+        - group_name: core
+        - group_description: "Core group for all servers"
+        - rules:
+          - proto: tcp
+            from_port: 80
+            to_port: 80
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 22
+            to_port: 22
+            cidr_ip: 0.0.0.0/0
+          - proto: tcp
+            from_port: 443
+            to_port: 443
+            cidr_ip: 0.0.0.0/0
+    - include: tasks/ec2/load_ec2_instances.yml
+      vars:
+        - count: 1
+        - group: "core"
+        - name: CI
+        - size: t2.medium
+        - image: "{{ami_id_ubuntu_1604}}"
+        - host_groups: "ec2,ci"
+    - include: tasks/ec2/instance_options.yml
+      vars:
+        - device: /dev/xvdf
+        - volume_name: ArtifactRepository
+        - add_to_groups: artrepo
+        - new_volume: true
+    - include: tasks/ec2/instance_options.yml
+      vars:
+        - device: /dev/xvdg
+        - volume_name: BuildTool
+        - add_to_groups: buildtool
+        - volume_size: 10
+        - new_volume: true
+
+
+- hosts: ci
+  tasks:
+    - include: tasks/ec2/mount_volume.yml device=/dev/xvdf dir=/mnt/artrepo
+    - include: tasks/ec2/mount_volume.yml device=/dev/xvdg dir=/mnt/buildtool
+
+
+- hosts: ci
+  <TODO: Install repository and ci tool>
+
