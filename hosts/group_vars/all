@@ -7,3 +7,10 @@ ami_id_ubuntu_1604: ami-d8f4deab
 
 ec2_vpc_subnet_dev: <TODO: DEFINE SUBNET>
 ec2_ips: {}
+
+
+default_ec2_rules_out:
+  - proto: all
+    from_port: 0
+    to_port: 65535
+    cidr_ip: 0.0.0.0/0
