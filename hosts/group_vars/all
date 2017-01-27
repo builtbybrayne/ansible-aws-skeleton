@@ -1,4 +1,4 @@
-ansible_ssh_user: drone
+ansible_ssh_user: <TODO: define ssh user>
 
 ubuntu: true
 
