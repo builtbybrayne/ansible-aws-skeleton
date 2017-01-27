@@ -1,3 +1,5 @@
+ansible_ssh_user: drone
+
 ubuntu: true
 
 aws_pem_key: <TODO: DEFINE AWS PEM KEY>
