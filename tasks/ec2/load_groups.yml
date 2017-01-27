@@ -4,7 +4,5 @@
     description: "{{group_description}}"
     vpc_id: "{{group_vpc_id|default(None)}}"
     region: "{{group_region|default('eu-west-1c')}}"
-    aws_secret_key: "{{aws_access|default(lookup('env', 'SVPORTAL_AWS_ACCESS_KEY'))}}"
-    aws_access_key: "{{aws_secret|default(lookup('env', 'SVPORTAL_AWS_SECRET_KEY'))}}"
     rules: "{{group_rules}}"
     rules_egress: "{{group_rules_out|default(default_ec2_rules_out)}}"

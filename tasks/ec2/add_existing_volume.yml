@@ -23,5 +23,5 @@
   register: volumes
 
 - name: Tag EBS Volumes, if necessary 
-  shell: ec2addtag {{(item.volumes|selectattr('attachment_set.device', 'equalto', device)|first).id}} --tag Name="{{volume_name}}"
+  shell: ec2addtag {{(item.volumes|selectattr('attachment_set.device', 'equalto', device)|first).id}} --tag Name="{{volume_name}}" -O "{{aws_access|default(lookup('env','SVPORTAL_AWS_ACCESS_KEY'))}}" -W "{{aws_secret|default(lookup('env','SVPORTAL_AWS_SECRET_KEY'))}}"
   with_items: "{{volumes.results}}"
