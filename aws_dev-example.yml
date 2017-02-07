@@ -26,19 +26,17 @@
         - size: t2.small
         - image: "{{ami_id_ubuntu_1604}}"
         - vpc_subnet: "{{ec2_vpc_subnet_dev}}"
-        - host_groups: "ec2,<TODO: Define main host group if required>"
-    - include: tasks/ec2/instance_options.yml
+        - add_to_groups: "ec2"
+    - include: tasks/ec2/instance_volume.yml
       vars:
         - device: /dev/xvdf
         - volume_name: app
-        - add_to_groups: "ec2"
         - volume_size: 10
         - new_volume: true
-    - include: tasks/ec2/instance_options.yml
+    - include: tasks/ec2/instance_volume.yml
       vars:
         - device: /dev/xvdg
         - volume_name: logs
-        - add_to_groups: "ec2"
         - volume_size: 10
         - new_volume: true
 
